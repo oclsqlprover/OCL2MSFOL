@@ -2,7 +2,7 @@
 resources/cvc4.exe
 
 #packages
-packages/
+packages/*.jar
 
 #settings
 .settings/
