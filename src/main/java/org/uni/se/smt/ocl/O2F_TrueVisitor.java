@@ -89,7 +89,7 @@ public class O2F_TrueVisitor extends OCL2MSFOLVisitor {
 			evalVisitor = new O2F_EvalVisitor(dm, adhocContextualSet, defC);
 			sourceExp.accept(evalVisitor);
 			this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
-			String firstArgument = app(evalVisitor.getFOLFormulae(), fVarsSrc, var);
+			String firstArgument = app(sourceExp, evalVisitor.getFOLFormulae(), fVarsSrc, var);
 
 			Expression bodyExp = iteratorExp.getBody();
 			trueVisitor = new O2F_TrueVisitor(dm, adhocContextualSet, defC);
@@ -119,7 +119,7 @@ public class O2F_TrueVisitor extends OCL2MSFOLVisitor {
 			evalVisitor = new O2F_EvalVisitor(dm, adhocContextualSet, defC);
 			sourceExp.accept(evalVisitor);
 			this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
-			firstArgument = app(evalVisitor.getFOLFormulae(), fVarsSrc, var);
+			firstArgument = app(sourceExp, evalVisitor.getFOLFormulae(), fVarsSrc, var);
 
 			bodyExp = iteratorExp.getBody();
 			trueVisitor = new O2F_TrueVisitor(dm, adhocContextualSet, defC);
@@ -153,7 +153,7 @@ public class O2F_TrueVisitor extends OCL2MSFOLVisitor {
 			evalVisitor = new O2F_EvalVisitor(dm, adhocContextualSet, defC);
 			sourceExp.accept(evalVisitor);
 			this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
-			firstArgument = app(evalVisitor.getFOLFormulae(), fVarsSrc, var);
+			firstArgument = app(sourceExp, evalVisitor.getFOLFormulae(), fVarsSrc, var);
 
 			bodyExp = iteratorExp.getBody();
 			fVarsSrc = VariableUtils.FVars(bodyExp);
@@ -161,7 +161,7 @@ public class O2F_TrueVisitor extends OCL2MSFOLVisitor {
 			bodyExp.accept(evalVisitor);
             this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
 			String secondArgumentTemplate = "(= %s %s)";
-			String secondsecondArgument = app(evalVisitor.getFOLFormulae(), fVarsSrc, null);
+			String secondsecondArgument = app(sourceExp, evalVisitor.getFOLFormulae(), fVarsSrc, null);
 			secondArgument = String.format(secondArgumentTemplate, var, secondsecondArgument);
 
 			invalVisitor = new O2F_InvalidVisitor(dm, adhocContextualSet, defC);
@@ -195,7 +195,7 @@ public class O2F_TrueVisitor extends OCL2MSFOLVisitor {
             this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
 			List<Variable> fvExp = VariableUtils.FVars(exp);
 
-			firstArgument = app(evalVisitor.getFOLFormulae(), fvExp, var);
+			firstArgument = app(exp, evalVisitor.getFOLFormulae(), fvExp, var);
 
 			invalVisitor = new O2F_InvalidVisitor(dm, adhocContextualSet, defC);
 			exp.accept(invalVisitor);
@@ -220,7 +220,7 @@ public class O2F_TrueVisitor extends OCL2MSFOLVisitor {
             this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
 			fvExp = VariableUtils.FVars(exp);
 
-			firstArgument = app(evalVisitor.getFOLFormulae(), fvExp, var);
+			firstArgument = app(exp, evalVisitor.getFOLFormulae(), fvExp, var);
 
 			invalVisitor = new O2F_InvalidVisitor(dm, adhocContextualSet, defC);
 			exp.accept(invalVisitor);
@@ -369,8 +369,95 @@ public class O2F_TrueVisitor extends OCL2MSFOLVisitor {
 					fifthArgument, sixthArgument));
 			break;
 		case "<=":
+			template = Template.True.lessOrEqual;
+
+			exp = operationCallExp.getSource();
+			argExp = operationCallExp.getArguments().get(0);
+			nullVisitor = new O2F_NullVisitor(dm, adhocContextualSet, defC);
+			exp.accept(nullVisitor);
+			this.additionalConstraints.addAll(nullVisitor.additionalConstraints);
+			firstArgument = nullVisitor.getFOLFormulae();
+			argExp.accept(nullVisitor);
+			this.additionalConstraints.addAll(nullVisitor.additionalConstraints);
+			secondArgument = nullVisitor.getFOLFormulae();
+			evalVisitor = new O2F_EvalVisitor(dm, adhocContextualSet, defC);
+			exp.accept(evalVisitor);
+            this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
+			thirdArgument = evalVisitor.getFOLFormulae();
+			argExp.accept(evalVisitor);
+            this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
+			forthArgument = evalVisitor.getFOLFormulae();
+			invalVisitor = new O2F_InvalidVisitor(dm, adhocContextualSet, defC);
+			exp.accept(invalVisitor);
+			this.additionalConstraints.addAll(invalVisitor.additionalConstraints);
+			fifthArgument = invalVisitor.getFOLFormulae();
+			argExp.accept(invalVisitor);
+			this.additionalConstraints.addAll(invalVisitor.additionalConstraints);
+			sixthArgument = invalVisitor.getFOLFormulae();
+
+			this.setFOLFormulae(String.format(template, firstArgument, secondArgument, thirdArgument, forthArgument,
+					fifthArgument, sixthArgument));
+			break;
 		case ">=":
+			template = Template.True.greaterOrEqual;
+
+			exp = operationCallExp.getSource();
+			argExp = operationCallExp.getArguments().get(0);
+			nullVisitor = new O2F_NullVisitor(dm, adhocContextualSet, defC);
+			exp.accept(nullVisitor);
+			this.additionalConstraints.addAll(nullVisitor.additionalConstraints);
+			firstArgument = nullVisitor.getFOLFormulae();
+			argExp.accept(nullVisitor);
+			this.additionalConstraints.addAll(nullVisitor.additionalConstraints);
+			secondArgument = nullVisitor.getFOLFormulae();
+			evalVisitor = new O2F_EvalVisitor(dm, adhocContextualSet, defC);
+			exp.accept(evalVisitor);
+            this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
+			thirdArgument = evalVisitor.getFOLFormulae();
+			argExp.accept(evalVisitor);
+            this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
+			forthArgument = evalVisitor.getFOLFormulae();
+			invalVisitor = new O2F_InvalidVisitor(dm, adhocContextualSet, defC);
+			exp.accept(invalVisitor);
+			this.additionalConstraints.addAll(invalVisitor.additionalConstraints);
+			fifthArgument = invalVisitor.getFOLFormulae();
+			argExp.accept(invalVisitor);
+			this.additionalConstraints.addAll(invalVisitor.additionalConstraints);
+			sixthArgument = invalVisitor.getFOLFormulae();
+
+			this.setFOLFormulae(String.format(template, firstArgument, secondArgument, thirdArgument, forthArgument,
+					fifthArgument, sixthArgument));
+			break;
 		case ">":
+			template = Template.True.greaterThan;
+
+			exp = operationCallExp.getSource();
+			argExp = operationCallExp.getArguments().get(0);
+			nullVisitor = new O2F_NullVisitor(dm, adhocContextualSet, defC);
+			exp.accept(nullVisitor);
+			this.additionalConstraints.addAll(nullVisitor.additionalConstraints);
+			firstArgument = nullVisitor.getFOLFormulae();
+			argExp.accept(nullVisitor);
+			this.additionalConstraints.addAll(nullVisitor.additionalConstraints);
+			secondArgument = nullVisitor.getFOLFormulae();
+			evalVisitor = new O2F_EvalVisitor(dm, adhocContextualSet, defC);
+			exp.accept(evalVisitor);
+            this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
+			thirdArgument = evalVisitor.getFOLFormulae();
+			argExp.accept(evalVisitor);
+            this.additionalConstraints.addAll(evalVisitor.additionalConstraints);
+			forthArgument = evalVisitor.getFOLFormulae();
+			invalVisitor = new O2F_InvalidVisitor(dm, adhocContextualSet, defC);
+			exp.accept(invalVisitor);
+			this.additionalConstraints.addAll(invalVisitor.additionalConstraints);
+			fifthArgument = invalVisitor.getFOLFormulae();
+			argExp.accept(invalVisitor);
+			this.additionalConstraints.addAll(invalVisitor.additionalConstraints);
+			sixthArgument = invalVisitor.getFOLFormulae();
+
+			this.setFOLFormulae(String.format(template, firstArgument, secondArgument, thirdArgument, forthArgument,
+					fifthArgument, sixthArgument));
+			break;
 		case "<":
 			template = Template.True.lessthan;
 

@@ -24,10 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.uni.dm2schema.dm.Association;
 import org.uni.dm2schema.dm.DataModel;
+import org.uni.dm2schema.dm.DmUtils;
 import org.uni.dm2schema.dm.Entity;
 
 import com.uni.se.jocl.expressions.Expression;
+import com.uni.se.jocl.expressions.M2MAssociationClassCallExp;
+import com.uni.se.jocl.expressions.OclExp;
 import com.uni.se.jocl.expressions.Variable;
 import com.uni.se.jocl.visit.ParserVisitor;
 
@@ -67,9 +71,32 @@ public abstract class OCL2MSFOLVisitor implements ParserVisitor {
     	this.additionalConstraints.add(constraint);
     }
 
+    protected String app(Expression expression, String folFormulae, List<Variable> fvExp, String var) {
+        String parameter = "";
+        if (expression instanceof M2MAssociationClassCallExp) {
+        	String association = ((M2MAssociationClassCallExp) expression).getAssociation();
+        	Association a = DmUtils.getAssociation(dm, association);
+        	Variable end = fvExp.get(0);
+        	String type = end.getType().getReferredType();
+        	if (type.equals(a.getLeftEntityName())) {
+        		parameter = String.format("%s %s", end.getName(), var);
+        	} else {
+        		parameter = String.format("%s %s", var, end.getName());
+        	}
+        } else {
+        	for (Variable v : fvExp) {
+                parameter = parameter.concat(v.getName()).concat(" ");
+            }
+            if (var != null) {
+            	parameter = parameter.concat(var);
+            }
+        }
+        return String.format(folFormulae, parameter);
+    }
+    
     protected String app(String folFormulae, List<Variable> fvExp, String var) {
         String parameter = "";
-        for (Variable v : fvExp) {
+    	for (Variable v : fvExp) {
             parameter = parameter.concat(v.getName()).concat(" ");
         }
         if (var != null) {

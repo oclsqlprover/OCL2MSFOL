@@ -142,11 +142,12 @@ public class O2F_EvalVisitor extends OCL2MSFOLVisitor {
 
 	@Override
 	public void visit(PropertyCallExp propertyCallExp) {
+		String source = propertyCallExp.getNavigationSource().getType().getReferredType();
 		String property = propertyCallExp.getReferredProperty();
 		String clazz = null;
 		for (Entity e : dm.getEntities().values()) {
 			for (Attribute att : e.getAttributes()) {
-				if (att.getName().equals(property)) {
+				if (att.getName().equals(property) && source.equals(e.getName())) {
 					clazz = e.getName();
 				}
 			}

@@ -68,7 +68,7 @@ public class Configuration {
 
 		final String context = env.get(ENV_CONTEXT);
 		List<Context> vars = new ArrayList<Context>();
-		if(context != null && context != "") {
+		if(context != null) {
 			List<String> sVars = Arrays.asList(context.split(","));
 			for (String sVar : sVars) {
 				String[] parts = sVar.split(":");
@@ -80,7 +80,7 @@ public class Configuration {
 		
 		final String invariants = env.get(ENV_INVARIANTS);
 		List<String> sInvariants = new ArrayList<String>();
-		if(invariants != null && invariants != "") {
+		if(invariants != null) {
 			sInvariants.addAll(Arrays.asList(invariants.split(",")));
 		}
 		setInvariant(sInvariants);

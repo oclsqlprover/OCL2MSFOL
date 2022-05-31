@@ -30,12 +30,15 @@ public class Template {
 		public static String and = "(and %s %s)";
 		public static String or = "(or %s %s)";
 		public static String lessthan = "(and (< %3$s %4$s) (not (or %1$s %5$s %2$s %6$s)))";
+		public static String lessOrEqual = "(and (<= %3$s %4$s) (not (or %1$s %5$s %2$s %6$s)))";
+		public static String greaterOrEqual = "(and (>= %3$s %4$s) (not (or %1$s %5$s %2$s %6$s)))";
+		public static String greaterThan = "(and (> %3$s %4$s) (not (or %1$s %5$s %2$s %6$s)))";
 		public static String implies = "(or %s %s)";
-		public static String isEmpty = "(forall ((%s %s))(and (not %s) (not %s)))";
-		public static String notEmpty = "(exists ((%s %s))(and %s (not %s)))";
-		public static String forAll = "(forall ((%s %s))(and (=> %s %s) (not %s)))";
-		public static String exists = "(exists ((%s %s))(and (and %s %s) (not %s)))";
-		public static String includes = "(exists ((%s %s))(and %s %s (not %s) (not %s)))";
+		public static String isEmpty = "(forall ((%s %s)) (and (not %s) (not %s)))";
+		public static String notEmpty = "(exists ((%s %s)) (and %s (not %s)))";
+		public static String forAll = "(forall ((%s %s)) (and (=> %s %s) (not %s)))";
+		public static String exists = "(exists ((%s %s)) (and (and %s %s) (not %s)))";
+		public static String includes = "(exists ((%s %s)) (and %s %s (not %s) (not %s)))";
 	}
 
 	public static class False {
